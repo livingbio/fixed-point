@@ -33,11 +33,12 @@ def serialize_value(value: Any) -> Any:
     # Check for Pydantic BaseModel (optional dependency)
     try:
         from pydantic import BaseModel
+
         if isinstance(value, BaseModel):
             cls = type(value)
             return {
                 "__pydantic__": f"{cls.__module__}.{cls.__qualname__}",
-                "data": serialize_value(value.model_dump(mode='json')),
+                "data": serialize_value(value.model_dump(mode="json")),
             }
     except ImportError:
         pass

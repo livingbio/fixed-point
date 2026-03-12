@@ -1,4 +1,5 @@
 """Tests for Pydantic and Enum serialization support."""
+
 from __future__ import annotations
 
 import enum
@@ -8,6 +9,7 @@ from fixedpoint._serializer import deserialize_value, serialize_value
 
 class Color(enum.Enum):
     """Test enum."""
+
     RED = "red"
     GREEN = "green"
     BLUE = "blue"
@@ -15,6 +17,7 @@ class Color(enum.Enum):
 
 class Status(enum.IntEnum):
     """Test int enum."""
+
     PENDING = 1
     ACTIVE = 2
     DONE = 3
@@ -74,12 +77,14 @@ try:
 
     class Person(BaseModel):
         """Test Pydantic model."""
+
         name: str
         age: int
         email: str | None = None
 
     class MediaFile(BaseModel):
         """Test Pydantic model with enum."""
+
         type: Color
         title: str
         size: int
