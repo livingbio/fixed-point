@@ -60,7 +60,7 @@ def fixedpoint(request: pytest.FixtureRequest):  # noqa: ANN201
 def _get_cassette_dir(request: pytest.FixtureRequest) -> Path:
     test_file = Path(request.fspath)
     module_name = test_file.stem
-    return test_file.parent / "cassettes" / module_name
+    return test_file.parent / "fixed-points" / module_name
 
 
 def _get_cassette_name(request: pytest.FixtureRequest) -> str:

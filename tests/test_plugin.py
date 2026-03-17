@@ -24,7 +24,7 @@ def test_off_mode_no_cassette(pytester):
     )
     result = pytester.runpytest("--fixedpoint=off")
     result.assert_outcomes(passed=1)
-    assert not (pytester.path / "cassettes").exists()
+    assert not (pytester.path / "fixed-points").exists()
 
 
 def test_record_once_creates_cassette(pytester):
@@ -192,7 +192,7 @@ def test_parametrized_separate_cassettes(pytester):
     result = pytester.runpytest("--fixedpoint=record_once", "-v")
     result.assert_outcomes(passed=2)
 
-    cassettes = list((pytester.path / "cassettes").rglob("*.yaml"))
+    cassettes = list((pytester.path / "fixed-points").rglob("*.yaml"))
     assert len(cassettes) == 2
 
 

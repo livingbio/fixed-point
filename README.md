@@ -72,7 +72,7 @@ async def test_user_client(fixedpoint):
     assert user["name"] == "Alice"
 ```
 
-The decorator detects whether the function is a coroutine and wraps it accordingly. Recording and replay work identically — the cassette format is the same for sync and async functions.
+The decorator detects whether the function is a coroutine and wraps it accordingly. Recording and replay work identically — the recording format is the same for sync and async functions.
 
 ## Modes
 
@@ -86,10 +86,10 @@ Fixed-Point supports 4 operational modes via the `--fixedpoint` CLI option:
 | `rewrite` | Always re-execute and overwrite recordings. Use when the real behavior has changed. |
 
 ```bash
-# Record cassettes for the first time
+# Record fixed-points for the first time
 pytest tests/ --fixedpoint=record_once
 
-# Replay from cassettes (safe for CI)
+# Replay from fixed-points (safe for CI)
 pytest tests/ --fixedpoint=replay
 
 # Force re-record everything
@@ -99,17 +99,17 @@ pytest tests/ --fixedpoint=rewrite
 pytest tests/
 ```
 
-## Cassettes
+## Fixed Points
 
-Recordings are stored as human-readable YAML files in `tests/cassettes/`:
+Recordings are stored as human-readable YAML files in `tests/fixed-points/`:
 
 ```
-tests/cassettes/
+tests/fixed-points/
   test_module_name/
     test_function_name.yaml
 ```
 
-A cassette file looks like:
+A recording file looks like:
 
 ```yaml
 version: 1
@@ -120,7 +120,7 @@ calls:
       return: {"name": "Alice", "age": 30}
 ```
 
-Cassettes are committed to your repo so the whole team replays the same results.
+Recordings are committed to your repo so the whole team replays the same results.
 
 ## Supported Types
 
@@ -159,7 +159,7 @@ def test_status(fixedpoint):
     assert status == Status.ACTIVE  # Works perfectly
 ```
 
-The cassette stores both the enum class path and the value:
+The recording stores both the enum class path and the value:
 
 ```yaml
 return:
@@ -190,7 +190,7 @@ def test_fetch_user(fixedpoint):
     assert user.name == "Alice"
 ```
 
-The cassette stores the model's data as a plain dict:
+The recording stores the model's data as a plain dict:
 
 ```yaml
 return:
@@ -209,7 +209,7 @@ Fixed-Point raises clear errors when things don't match:
 
 | Exception | When |
 |-----------|------|
-| `CassetteNotFoundError` | No cassette file found in `replay` mode |
+| `CassetteNotFoundError` | No recording file found in `replay` mode |
 | `CassetteMismatchError` | Recorded args don't match actual call, or too many calls |
 | `SerializationError` | Unsupported type passed to a `@recordable` function |
 
@@ -221,13 +221,13 @@ When you see a `CassetteMismatchError`, the error message includes a hint:
 
 ### vs VCR.py / responses / requests-mock
 
-VCR-style tools record at the **HTTP layer** — every header, cookie, content-type, and redirect ends up in your cassette. This means:
+VCR-style tools record at the **HTTP layer** — every header, cookie, content-type, and redirect ends up in your recording. This means:
 
-* Cassettes are bloated with details you don't care about (auth tokens, timestamps, trace IDs).
+* Recordings are bloated with details you don't care about (auth tokens, timestamps, trace IDs).
 * An unrelated header change breaks your tests even though the actual data hasn't changed.
 * You're testing HTTP plumbing, not your application logic.
 
-Fixed-Point records at the **function layer**. You choose exactly which functions to pin down with `@recordable`, and the cassette only contains the args and return values — nothing more.
+Fixed-Point records at the **function layer**. You choose exactly which functions to pin down with `@recordable`, and the recording only contains the args and return values — nothing more.
 
 ### vs unittest.mock / monkeypatch
 
@@ -245,7 +245,7 @@ Fixed-Point records **real outputs** on the first run. No guessing, no hand-craf
 |---|--------|------|-------------|
 | Records at | HTTP layer | N/A (manual) | Function layer |
 | Setup effort | Low | High | Low |
-| Cassette noise | High (headers, cookies, etc.) | N/A | Low (args + return only) |
+| Recording noise | High (headers, cookies, etc.) | N/A | Low (args + return only) |
 | Stays in sync with reality | Fragile | Drifts over time | `rewrite` to refresh |
 
 ## Why fixed-point?
